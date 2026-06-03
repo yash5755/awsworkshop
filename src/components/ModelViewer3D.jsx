@@ -29,91 +29,128 @@ const projectUVs = (geometry) => {
   return cloned;
 };
 
+// Same video as the hover popup — TVs show its first frame, then loop when playing
+const TV_SCREEN_VIDEO_SRC = "/Videos/inaguration.mp4";
+
 // ─── Video element + texture factory ─────────────────────────────────────────
-// Returns a stable { video, texture } pair.
-// flipY = false  →  matches bounding-box UVs (Y=0 at bottom in WebGL space)
-const createVideoTexture = (src) => {
+// Video must be in the DOM and briefly played before WebGL can sample frames.
+const createVideoTexture = (src, { loop = true, mountInDom = true } = {}) => {
   const video = document.createElement("video");
   video.src = src;
-  video.crossOrigin = "anonymous";
-  video.loop = true;
+  video.loop = loop;
   video.muted = true;
   video.playsInline = true;
-  video.autoplay = true;
+  video.preload = "auto";
   video.setAttribute("playsinline", "");
   video.setAttribute("webkit-playsinline", "");
 
-  // Attempt immediate play; register a gesture retry on failure
-  const tryPlay = () =>
-    video.play().catch(() => {
-      const retry = () => { video.play().catch(() => {}); };
-      document.addEventListener("click",      retry, { once: true });
-      document.addEventListener("touchstart", retry, { once: true });
-    });
-  tryPlay();
+  if (mountInDom) {
+    video.style.cssText =
+      "position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px;top:0";
+    document.body.appendChild(video);
+  }
 
   const texture = new THREE.VideoTexture(video);
-  texture.flipY       = false;            // must match bounding-box UV orientation
-  texture.colorSpace  = THREE.SRGBColorSpace;
-  texture.wrapS       = THREE.ClampToEdgeWrapping;
-  texture.wrapT       = THREE.ClampToEdgeWrapping;
-  texture.minFilter   = THREE.LinearFilter;
-  texture.magFilter   = THREE.LinearFilter;
-  texture.format      = THREE.RGBAFormat;
-  return { texture, video };
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+
+  const refreshTexture = () => {
+    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      texture.needsUpdate = true;
+    }
+  };
+
+  const tryPlay = () =>
+    video.play().catch(() => {
+      const unlock = () => video.play().catch(() => {});
+      document.addEventListener("pointerdown", unlock, { once: true });
+      document.addEventListener("touchstart", unlock, { once: true });
+    });
+
+  // Decode at least one frame (browsers often keep WebGL black until play())
+  video.addEventListener(
+    "loadeddata",
+    () => {
+      video.currentTime = 0.05;
+      video.addEventListener(
+        "seeked",
+        () => {
+          tryPlay();
+        },
+        { once: true }
+      );
+    },
+    { once: true }
+  );
+
+  video.addEventListener("playing", refreshTexture, { once: true });
+
+  const dispose = () => {
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+    video.remove();
+    texture.dispose();
+  };
+
+  return { texture, video, dispose };
 };
 
-// ─── Image texture ────────────────────────────────────────────────────────────
+const tickVideoTexture = (texture, video) => {
+  if (texture && video?.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+    texture.needsUpdate = true;
+  }
+};
+
+const createScreenMaterial = (map) =>
+  new THREE.MeshBasicMaterial({
+    map,
+    toneMapped: false,
+    side: THREE.DoubleSide,
+  });
+
+// Recreated on mount so React Strict Mode cleanup cannot leave a dead <video>
+const useScreenVideoTexture = (src) => {
+  const [texture, setTexture] = useState(null);
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const { texture: tex, video, dispose } = createVideoTexture(src);
+    videoRef.current = video;
+    setTexture(tex);
+    return dispose;
+  }, [src]);
+
+  useFrame(() => tickVideoTexture(texture, videoRef.current));
+
+  return texture;
+};
+
+// Image TVs use projected UVs (not GLB UVs) — flipY false matches that mapping
+const IMAGE_SCREEN_SRC = "/Logo/aws_builder.jpeg";
+
 const createImageTexture = (src) => {
-  const loader  = new THREE.TextureLoader();
+  const loader = new THREE.TextureLoader();
   const texture = loader.load(src);
-  texture.flipY      = false;
+  texture.flipY = false;
   texture.colorSpace = THREE.SRGBColorSpace;
   return texture;
 };
 
 // ─── 1. Mobile model (Laptop) ─────────────────────────────────────────────────
 const MobileModel = ({ onLoad }) => {
-  const { scene }                         = useGLTF("/Model/laptop-transformed.glb");
-  const modelRef                          = useRef();
-  const videoRef                          = useRef();   // holds the raw <video> for useFrame
-  const textureRef                        = useRef();   // holds the THREE.VideoTexture
-
-  const { texture: videoTexture, video }  = useMemo(() => createVideoTexture("/Videos/video.mp4"), []);
-
-  // Keep a ref so useFrame can reach it without re-creating the hook
-  useEffect(() => {
-    videoRef.current   = video;
-    textureRef.current = videoTexture;
-  }, [video, videoTexture]);
-
-  // CRITICAL: VideoTexture does NOT self-update — we must mark needsUpdate every frame
-  useFrame(() => {
-    if (textureRef.current && videoRef.current && !videoRef.current.paused) {
-      textureRef.current.needsUpdate = true;
-    }
-  });
+  const { scene } = useGLTF("/Model/laptop-transformed.glb");
+  const modelRef = useRef();
+  const videoTexture = useScreenVideoTexture("/Videos/TextVideo.mp4");
 
   const videoMaterial = useMemo(
-    () =>
-      new THREE.MeshBasicMaterial({
-        map:       videoTexture,
-        toneMapped: false,
-        side:      THREE.DoubleSide,
-      }),
+    () => (videoTexture ? createScreenMaterial(videoTexture) : null),
     [videoTexture]
   );
 
   useEffect(() => {
-    if (!scene) return;
-
-    // ── DEBUG: log every mesh name so you can verify "Object_4" is correct ──
-    console.group("MobileModel — mesh names");
-    scene.traverse((child) => {
-      if (child.isMesh) console.log(child.name, child);
-    });
-    console.groupEnd();
-    // ─────────────────────────────────────────────────────────────────────────
+    if (!scene || !videoMaterial) return;
 
     scene.traverse((child) => {
       if (!child.isMesh) return;
@@ -121,7 +158,7 @@ const MobileModel = ({ onLoad }) => {
         child.geometry = projectUVs(child.geometry);
         child.material = videoMaterial;
       } else {
-        child.castShadow    = true;
+        child.castShadow = true;
         child.receiveShadow = true;
       }
     });
@@ -132,18 +169,12 @@ const MobileModel = ({ onLoad }) => {
       modelRef.current.rotation.set(0, Math.PI / 6, 0);
       gsap.timeline({ delay: 0.3 })
         .to(modelRef.current.position, { y: -0.8, duration: 1.2, ease: "power3.out" })
-        .to(modelRef.current.scale,    { x: 0.65, y: 0.65, z: 0.65, duration: 1.2, ease: "back.out(1.4)" }, "<")
+        .to(modelRef.current.scale, { x: 0.65, y: 0.65, z: 0.65, duration: 1.2, ease: "back.out(1.4)" }, "<")
         .to(modelRef.current.rotation, { y: 2 * Math.PI + Math.PI / 6, duration: 1.8, ease: "power2.inOut" }, "<");
     }
 
     if (onLoad) onLoad();
-
-    return () => {
-      video.pause();
-      video.src = "";
-      video.load();
-    };
-  }, [scene, videoMaterial, video, onLoad]);
+  }, [scene, videoMaterial, onLoad]);
 
   return <primitive ref={modelRef} object={scene} />;
 };
@@ -152,12 +183,25 @@ const MobileModel = ({ onLoad }) => {
 // Screen mesh names expected in computers.glb — CHANGE THESE if your GLB differs.
 // Check the browser console after first load; MobileModel and DesktopModel both
 // log every mesh name so you can copy the correct ones here.
+// Node names in computers.glb (loader renames single-mesh nodes to these)
 const VIDEO_SCREEN_NAMES = [
   "Object_207", "Object_213", "Object_219", "Object_225", "Object_231",
+];
+// Raw mesh names inside the GLB (fallback if node rename does not run)
+const VIDEO_SCREEN_MESH_NAMES = [
+  "Object_102", "Object_106", "Object_110", "Object_114", "Object_118",
 ];
 const IMAGE_SCREEN_NAMES = [
   "Object_210", "Object_216", "Object_222", "Object_228",
 ];
+const IMAGE_SCREEN_MESH_NAMES = [
+  "Object_104", "Object_108", "Object_112", "Object_116",
+];
+
+const isNamedScreen = (mesh, nodeNames, meshNames) =>
+  nodeNames.includes(mesh.name) ||
+  meshNames.includes(mesh.name) ||
+  nodeNames.includes(mesh.userData?.name);
 
 const DesktopModel = ({ onVideoHover, onLoad }) => {
   const { scene }               = useGLTF("/Model/computers.glb");
@@ -169,45 +213,16 @@ const DesktopModel = ({ onVideoHover, onLoad }) => {
   const hoveredMeshRef          = useRef(null);
   const hasRotated              = useRef(false);
   const hoverOffTimerRef        = useRef(null);
-  const videoRef                = useRef();
-  const textureRef              = useRef();
+  const videoTexture = useScreenVideoTexture(TV_SCREEN_VIDEO_SRC);
+  const imageTexture = useMemo(() => createImageTexture(IMAGE_SCREEN_SRC), []);
 
-  const { texture: videoTexture, video } = useMemo(
-    () => createVideoTexture("/Videos/video.mp4"),
-    []
-  );
-  const imageTexture = useMemo(() => createImageTexture("/image.jpg"), []);
-
-  useEffect(() => {
-    videoRef.current   = video;
-    textureRef.current = videoTexture;
-  }, [video, videoTexture]);
-
-  // CRITICAL: tick VideoTexture every frame
-  useFrame(() => {
-    if (textureRef.current && videoRef.current && !videoRef.current.paused) {
-      textureRef.current.needsUpdate = true;
-    }
-  });
-
-  // Base materials — we clone per-screen below so hover can target individual meshes
-  const baseVideoMat = useMemo(
-    () =>
-      new THREE.MeshBasicMaterial({
-        map:       videoTexture,
-        toneMapped: false,
-        side:      THREE.DoubleSide,
-      }),
+  const videoScreenMaterial = useMemo(
+    () => (videoTexture ? createScreenMaterial(videoTexture) : null),
     [videoTexture]
   );
 
   const imageMaterial = useMemo(
-    () =>
-      new THREE.MeshBasicMaterial({
-        map:       imageTexture,
-        toneMapped: false,
-        side:      THREE.DoubleSide,
-      }),
+    () => createScreenMaterial(imageTexture),
     [imageTexture]
   );
 
@@ -223,26 +238,16 @@ const DesktopModel = ({ onVideoHover, onLoad }) => {
   };
 
   useEffect(() => {
-    if (!scene) return;
+    if (!scene || !videoScreenMaterial) return;
 
-    // ── DEBUG: log every mesh name ──────────────────────────────────────────
-    console.group("DesktopModel — mesh names");
-    scene.traverse((child) => {
-      if (child.isMesh) console.log(child.name, child);
-    });
-    console.groupEnd();
-    // ───────────────────────────────────────────────────────────────────────
-
+    screensRef.current = {};
     scene.traverse((child) => {
       if (!child.isMesh) return;
-      if (VIDEO_SCREEN_NAMES.includes(child.name)) {
-        child.geometry = projectUVs(child.geometry);
-        // Clone so each screen is independently animatable
-        const mat = baseVideoMat.clone();
-        mat.map = videoTexture;          // share the same VideoTexture
-        child.material = mat;
-        screensRef.current[child.name]  = child;
-      } else if (IMAGE_SCREEN_NAMES.includes(child.name)) {
+      if (isNamedScreen(child, VIDEO_SCREEN_NAMES, VIDEO_SCREEN_MESH_NAMES)) {
+        // GLB already has TEXCOORD_0 — do not replace with projectUVs
+        child.material = videoScreenMaterial;
+        screensRef.current[child.name] = child;
+      } else if (isNamedScreen(child, IMAGE_SCREEN_NAMES, IMAGE_SCREEN_MESH_NAMES)) {
         child.geometry = projectUVs(child.geometry);
         child.material = imageMaterial;
       } else {
@@ -271,13 +276,7 @@ const DesktopModel = ({ onVideoHover, onLoad }) => {
     }
 
     if (onLoad) onLoad();
-
-    return () => {
-      video.pause();
-      video.src = "";
-      video.load();
-    };
-  }, [scene, baseVideoMat, imageMaterial, video, onLoad, videoTexture]);
+  }, [scene, videoScreenMaterial, imageMaterial, onLoad]);
 
   // ── Pointer / hover logic ─────────────────────────────────────────────────
   useEffect(() => {
@@ -425,7 +424,7 @@ const VideoZoomPopup = ({ isVisible, videoSrc }) => {
           className="absolute inset-0 rounded-lg border-2 pointer-events-none"
         />
         <div
-          style={{ width: "60vw", height: "60vh", maxWidth: "900px", maxHeight: "600px" }}
+          style={{ width: "min(92vw, 900px)", height: "min(55vh, 600px)", maxWidth: "900px", maxHeight: "600px" }}
           className="relative bg-[#070708] rounded-lg overflow-hidden flex items-center justify-center border border-[#00D9FF]/30"
         >
           <video
@@ -485,8 +484,8 @@ const Loader = ({ onLoadComplete }) => {
       <div className="absolute inset-0 bg-gradient-to-br from-black via-[#0d0015] to-black" />
       <div className="relative z-10 flex flex-col items-center gap-6 sm:gap-8 md:gap-10 px-4">
         <div className="text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight">
-            AWS & DevOps<span className="text-[#9810FA]">Workshop</span>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight">
+            AWS & DevOps <span className="text-[#9810FA]">Workshop</span>
           </h1>
           <p className="text-gray-400 text-sm mt-2">Loading immersive 3D goodness</p>
         </div>
@@ -548,9 +547,9 @@ const ModelViewer3D = ({ onModelLoaded }) => {
     window.dispatchEvent(new CustomEvent("techverse-model-loaded"));
   };
 
-  const cameraPos = isMobile ? [0, 1.5, 5] : [7, 4, 10];
-  const fov       = isMobile ? 50 : 35;
-  const scale     = isMobile ? 0.7 : 1.0;
+  const cameraPos = isMobile ? [0, 1.1, 4.2] : [7, 4, 10];
+  const fov       = isMobile ? 48 : 35;
+  const scale     = isMobile ? 0.82 : 1.0;
 
   return (
     <div
@@ -560,9 +559,9 @@ const ModelViewer3D = ({ onModelLoaded }) => {
     >
       {isLoading && <Loader onLoadComplete={handleLoad} />}
 
-      <div className="relative box-border h-full w-full pt-8 sm:pt-10 md:pt-12">
+      <div className="relative box-border h-full w-full pt-2 sm:pt-10 md:pt-12">
         {isMobile && (
-          <div className="absolute left-0 right-0 bottom-0 top-32 z-0 opacity-40 pointer-events-none blur-sm">
+          <div className="absolute left-0 right-0 bottom-0 top-20 z-0 opacity-40 pointer-events-none blur-sm">
             <ShaderBackground color="#9810FA" />
           </div>
         )}
@@ -592,15 +591,19 @@ const ModelViewer3D = ({ onModelLoaded }) => {
               )}
             </group>
 
-            <OrbitControls
-              enableZoom enablePan={false}
-              maxPolarAngle={Math.PI / 2}
-              target={isMobile ? [0, 0, 0] : [0, 2.15, 0]}
-              minDistance={isMobile ? 2 : 4}
-              maxDistance={isMobile ? 5 : 12}
-              enableDamping dampingFactor={0.05}
-              autoRotate={false}
-            />
+            {!isMobile && (
+              <OrbitControls
+                enableZoom
+                enablePan={false}
+                maxPolarAngle={Math.PI / 2}
+                target={[0, 2.15, 0]}
+                minDistance={4}
+                maxDistance={12}
+                enableDamping
+                dampingFactor={0.05}
+                autoRotate={false}
+              />
+            )}
 
             <Environment files="/hdri/potsdamer_platz_2k.hdr" />
           </Suspense>
@@ -614,11 +617,9 @@ const ModelViewer3D = ({ onModelLoaded }) => {
       {isMobile && !isLoading && (
         <button
           onClick={() => {
-            const sec = document.querySelector("section");
-            if (sec?.nextElementSibling)
-              sec.nextElementSibling.scrollIntoView({ behavior: "smooth" });
+            document.getElementById("main-content")?.scrollIntoView({ behavior: "smooth" });
           }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce cursor-pointer bg-white/10 backdrop-blur-sm border border-white/20 rounded-full p-3 hover:bg-white/20 transition-all duration-300"
+          className="absolute bottom-20 sm:bottom-8 left-1/2 -translate-x-1/2 z-20 animate-bounce cursor-pointer bg-white/10 backdrop-blur-sm border border-white/20 rounded-full p-3 hover:bg-white/20 transition-all duration-300"
           aria-label="Scroll to next section"
         >
           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -19,7 +19,7 @@ const ImagesSliderDemo = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden flex items-center justify-center bg-black">
+    <div className="relative w-full min-h-screen-safe h-screen-safe overflow-hidden flex items-center justify-center bg-black">
       {/* Background Image Slider */}
       <AnimatePresence mode="wait">
         <motion.img
@@ -38,21 +38,21 @@ const ImagesSliderDemo = () => {
       <div className="absolute inset-0 bg-black/60 z-40 pointer-events-none" />
 
       {/* Content wrapper exactly matching original layout */}
-      <div className="z-50 flex flex-col justify-center items-center px-4 max-w-4xl text-center">
+      <div className="z-50 flex flex-col justify-center items-center px-4 sm:px-6 max-w-4xl text-center w-full">
         <motion.h1 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-5xl md:text-7xl font-black text-white text-center mb-6 leading-tight"
+          className="text-3xl sm:text-5xl md:text-7xl font-black text-white text-center mb-4 sm:mb-6 leading-tight"
         >
-          AWS & DevOps<span className="text-[#9810FA]">Workshop</span>
+          AWS & DevOps <span className="text-[#9810FA]">Workshop</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.8 }}
-          className="text-xl md:text-2xl text-white/90 text-center mb-8 max-w-2xl"
+          className="text-base sm:text-xl md:text-2xl text-white/90 text-center mb-6 sm:mb-8 max-w-2xl px-2"
         >
           One day of innovation, competition, and technology
         </motion.p>
@@ -64,7 +64,7 @@ const ImagesSliderDemo = () => {
         >
           <Link
             to="/register"
-            className="inline-block px-8 py-4 bg-[#9810FA] hover:bg-[#9810FA]/90 text-white font-bold text-lg rounded-full transition-all hover:scale-105 shadow-lg shadow-[#9810FA]/50"
+            className="inline-block px-6 sm:px-8 py-3 sm:py-4 bg-[#9810FA] hover:bg-[#9810FA]/90 text-white font-bold text-base sm:text-lg rounded-full transition-all hover:scale-105 shadow-lg shadow-[#9810FA]/50"
           >
             Register Now
           </Link>

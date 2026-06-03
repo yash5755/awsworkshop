@@ -1,12 +1,41 @@
-/* Empty reset file to avoid conflicts with TechVerse downloaded styles.css */
+/* Global layout — mobile-safe viewport and overflow */
+html,
 body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
-/* Lenis Smooth Scroll CSS Rules */
-html.lenis, html.lenis body {
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+/* Full-height sections that respect mobile browser chrome */
+.h-screen-safe {
+  height: 100vh;
+  height: 100dvh;
+}
+
+.min-h-screen-safe {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Ticker outline text — thinner stroke on small screens */
+@media (max-width: 639px) {
+  .outline-text {
+    -webkit-text-stroke: 1px white;
+    text-stroke: 1px white;
+  }
+}
+
+/* Lenis Smooth Scroll */
+html.lenis,
+html.lenis body {
   height: auto;
 }
 

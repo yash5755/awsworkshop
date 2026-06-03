@@ -45,8 +45,9 @@ const MaskReveal = ({ children, revealText, size = 10, revealSize = 600, classNa
     }
   }, []);
 
-  // Match sizing constraints from original
-  const maxRevealSize = isMobile ? Math.min(revealSize, 400) : revealSize;
+  const maxRevealSize = isMobile
+    ? Math.min(revealSize, Math.min(400, typeof window !== "undefined" ? window.innerWidth * 0.88 : 400))
+    : revealSize;
   const currentSize = isHovered ? maxRevealSize : size;
 
   // Auto-hover on mobile after a short delay
@@ -66,7 +67,7 @@ const MaskReveal = ({ children, revealText, size = 10, revealSize = 600, classNa
   return (
     <motion.div
       ref={containerRef}
-      className={`h-screen relative w-full overflow-hidden ${className}`}
+      className={`min-h-screen-safe h-screen-safe relative w-full overflow-hidden ${className}`}
       animate={{ backgroundColor: isHovered ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0)" }}
       transition={{ duration: 0.3 }}
     >
@@ -111,7 +112,7 @@ const MaskReveal = ({ children, revealText, size = 10, revealSize = 600, classNa
 
 const TechverseMaskEffect = () => {
   return (
-    <div className="relative flex min-h-screen h-screen w-full items-center justify-center overflow-hidden bg-black">
+    <div className="relative flex min-h-screen-safe h-screen-safe w-full items-center justify-center overflow-hidden bg-black">
       {/* Grid Overlay background */}
       <div className="pointer-events-none absolute inset-0 bg-grid-white/[0.08] opacity-40" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/10" />
@@ -134,7 +135,7 @@ const TechverseMaskEffect = () => {
 
       {/* Mask Reveal Layout */}
       <MaskReveal
-        className="relative h-screen border-none bg-transparent"
+        className="relative min-h-screen-safe h-screen-safe border-none bg-transparent"
         revealText={
           <div className="relative w-full h-full flex items-center justify-center px-4 sm:px-6">
             <video
@@ -146,17 +147,18 @@ const TechverseMaskEffect = () => {
               playsInline
             />
             <div className="absolute inset-0 bg-black/40" />
-            <p className="absolute mx-auto max-w-3xl text-center text-lg sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-white px-4 sm:px-6 leading-tight drop-shadow-[0_6px_20px_rgba(0,0,0,0.85)]">
+            <p className="absolute mx-auto max-w-3xl text-center text-base sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-white px-4 sm:px-6 leading-snug sm:leading-tight drop-shadow-[0_6px_20px_rgba(0,0,0,0.85)]">
               <span className="hidden sm:inline">
-                Hover to explore the AWS workshop journey — the cloud concepts, the hands-on builds, the live deployments.              </span>
+                Hover to explore the AWS workshop journey — the cloud concepts, the hands-on builds, the live deployments.
+              </span>
               <span className="sm:hidden">
-                Explore signature Techverse experiences — the stages, the breakthroughs, the champions.
+                Tap to explore the AWS workshop — cloud fundamentals, hands-on builds, and live deployments.
               </span>
             </p>
           </div>
         }
       >
-        <div className="mx-auto max-w-5xl text-center text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-400 px-4 sm:px-6 md:px-8 leading-tight">
+        <div className="mx-auto max-w-5xl text-center text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-400 px-4 sm:px-6 md:px-8 leading-snug sm:leading-tight">
           Discover the world of cloud computing at our{" "}
           <span className="text-purple-600">AWS Workshop</span>. Learn AWS fundamentals,{" "}
           <span className="text-purple-600">build your portfolio website,</span> and deploy it to the cloud using EC2 and CI/CD.

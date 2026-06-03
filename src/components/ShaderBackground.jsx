@@ -171,8 +171,8 @@ const ShaderBackground = ({ color = "#471CE2" }) => {
   }, [color]);
 
   return (
-    <div className="fixed inset-0 w-screen h-screen bg-black" style={{ zIndex: -1, pointerEvents: "none" }}>
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ display: "block", width: "100vw", height: "100vh" }} />
+    <div className="fixed inset-0 w-full h-full bg-black" style={{ zIndex: -1, pointerEvents: "none" }}>
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ display: "block" }} />
     </div>
   );
 };

@@ -43,7 +43,7 @@ const HackathonCalendar = () => {
   const isTimeUp = timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0;
 
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-black py-20">
+    <div className="relative flex min-h-screen-safe w-full items-center justify-center overflow-hidden bg-black py-12 sm:py-16 md:py-20">
       
       {/* Background grids and effects */}
       <div className="pointer-events-none absolute inset-0 bg-grid-white/[0.05] opacity-40" />
@@ -65,9 +65,9 @@ const HackathonCalendar = () => {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8">
         
         {/* Giant header title - TECHVERSE 2026 */}
-        <div className="text-center mb-16 animate-fade-in">
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-black text-white mb-4 tracking-tight leading-none" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-            AWS & DevOps<span className="text-[#9810FA]"> Workshop</span>
+        <div className="text-center mb-10 sm:mb-16 animate-fade-in">
+          <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-black text-white mb-4 tracking-tight leading-tight sm:leading-none px-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            AWS & DevOps <span className="text-[#9810FA]">Workshop</span>
           </h1>
           <div className="flex items-center justify-center gap-3 mb-6">
             <div className="h-px w-12 bg-linear-to-r bg-gradient-to-r from-transparent to-[#9810FA]" />
@@ -89,8 +89,8 @@ const HackathonCalendar = () => {
         </div>
 
         {/* Inline countdown timer */}
-        <div className="flex items-center gap-3 justify-center mb-8">
-          <div className="backdrop-blur-xl bg-white/5 border border-[#9810FA]/25 rounded-xl px-4 py-3 flex items-center gap-3">
+        <div className="flex items-center justify-center mb-8 px-2">
+          <div className="backdrop-blur-xl bg-white/5 border border-[#9810FA]/25 rounded-xl px-3 sm:px-4 py-3 flex flex-wrap items-center justify-center gap-2 sm:gap-3 max-w-full">
             {isTimeUp ? (
               <div className="text-white font-semibold">Event starts on June 12, 2026</div>
             ) : (
@@ -231,10 +231,11 @@ const HackathonCalendar = () => {
         <div className="mt-12 text-center">
           <Link
             to="/register"
-            className="group relative inline-flex items-center gap-2 px-10 py-5 bg-[#9810FA] rounded-full text-white font-bold text-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-[#9810FA]/50 animate-fade-in-delay-5"
+            className="group relative inline-flex items-center justify-center gap-2 px-6 sm:px-10 py-4 sm:py-5 bg-[#9810FA] rounded-full text-white font-bold text-base sm:text-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-[#9810FA]/50 animate-fade-in-delay-5 max-w-[95vw]"
           >
-            <span className="relative z-10 flex items-center gap-2">
-              Register Now for AWS & DevOps 2026
+            <span className="relative z-10 flex items-center gap-2 text-center">
+              <span className="sm:hidden">Register for Workshop 2026</span>
+              <span className="hidden sm:inline">Register Now for AWS & DevOps 2026</span>
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-5 h-5 group-hover:translate-x-1 transition-transform">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>

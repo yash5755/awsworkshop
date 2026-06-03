@@ -61,10 +61,10 @@ const SocietiesCarousel = () => {
         
         {/* Title */}
         <div className="space-y-3">
-          <h2 className="text-3xl md:text-5xl font-black text-white">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white px-2">
             Powered By <span className="text-[#9810FA]">Our Societies</span>
           </h2>
-          <p className="text-gray-400 text-base md:text-lg">
+          <p className="text-gray-400 text-sm sm:text-base md:text-lg px-4">
             Collaborating to make AWS & DevOps Workshop 2026 extraordinary
           </p>
         </div>
@@ -72,20 +72,20 @@ const SocietiesCarousel = () => {
         {/* Marquee Row */}
         <div className="relative w-full">
           {/* Side blur linear-gradient overlays */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
+          <div className="absolute left-0 top-0 bottom-0 w-10 sm:w-20 md:w-32 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-10 sm:w-20 md:w-32 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
 
           <div 
             ref={scrollContainerRef}
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-            className="flex gap-12 md:gap-16 overflow-x-hidden scrollbar-hide py-4"
+            className="flex gap-8 sm:gap-12 md:gap-16 overflow-x-hidden scrollbar-hide py-4"
           >
             {duplicatedSocieties.map((soc, idx) => (
               <div 
                 key={`${soc.name}-${idx}`} 
                 className="shrink-0 group cursor-pointer"
               >
-                <div className="relative w-40 h-40 md:w-48 md:h-48 backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 transition-all duration-300 hover:bg-white/10 hover:border-[#9810FA]/50 hover:scale-105 flex items-center justify-center">
+                <div className="relative w-28 h-28 sm:w-40 sm:h-40 md:w-48 md:h-48 backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all duration-300 hover:bg-white/10 hover:border-[#9810FA]/50 hover:scale-105 flex items-center justify-center">
                   <img 
                     src={soc.logo} 
                     alt={soc.name} 

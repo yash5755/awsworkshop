@@ -14,20 +14,20 @@ import Footer from "../components/Footer";
 const Ticker = () => {
   const e = (
     <>
-      <h2 className="shrink-0 text-white text-7xl sm:text-7xl md:text-8xl lg:text-9xl font-black" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>AWS & DevOps</h2>
-      <h2 className="shrink-0 text-white/80 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light italic" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>12 June 2026</h2>
-      <h2 className="shrink-0 text-transparent text-7xl sm:text-7xl md:text-8xl lg:text-9xl font-black outline-text" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>AWS & DevOps</h2>
-      <h2 className="shrink-0 text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Join Us</h2>
-      <h2 className="shrink-0 text-transparent text-7xl sm:text-7xl md:text-8xl lg:text-9xl font-black outline-text" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>12 June 2026</h2>
-      <h2 className="shrink-0 text-white/80 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light italic" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Be There</h2>
-      <h2 className="shrink-0 text-white text-7xl sm:text-7xl md:text-8xl lg:text-9xl font-black" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Workshop</h2>
-      <h2 className="shrink-0 text-transparent text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold outline-text" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>June 2026</h2>
+      <h2 className="shrink-0 text-white text-3xl sm:text-5xl md:text-8xl lg:text-9xl font-black" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>AWS & DevOps</h2>
+      <h2 className="shrink-0 text-white/80 text-2xl sm:text-4xl md:text-7xl lg:text-8xl font-light italic" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>12 June 2026</h2>
+      <h2 className="shrink-0 text-transparent text-3xl sm:text-5xl md:text-8xl lg:text-9xl font-black outline-text" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>AWS & DevOps</h2>
+      <h2 className="shrink-0 text-white text-2xl sm:text-4xl md:text-7xl lg:text-8xl font-semibold" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Join Us</h2>
+      <h2 className="shrink-0 text-transparent text-3xl sm:text-5xl md:text-8xl lg:text-9xl font-black outline-text" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>12 June 2026</h2>
+      <h2 className="shrink-0 text-white/80 text-2xl sm:text-4xl md:text-7xl lg:text-8xl font-light italic" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Be There</h2>
+      <h2 className="shrink-0 text-white text-3xl sm:text-5xl md:text-8xl lg:text-9xl font-black" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Workshop</h2>
+      <h2 className="shrink-0 text-transparent text-2xl sm:text-4xl md:text-7xl lg:text-8xl font-bold outline-text" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>June 2026</h2>
     </>
   );
   return (
-    <div className="absolute bottom-0 left-0 right-0 flex items-center select-none pointer-events-none pb-8 sm:pb-12 md:pb-16 overflow-hidden">
+    <div className="absolute bottom-0 left-0 right-0 flex items-center select-none pointer-events-none pb-4 sm:pb-12 md:pb-16 overflow-hidden z-10">
       <div className="relative w-full">
-        <div className="animate-horizontal-scroll flex items-center gap-8 sm:gap-12 md:gap-16 w-max">
+        <div className="animate-horizontal-scroll flex items-center gap-4 sm:gap-12 md:gap-16 w-max">
           {e}
           {e}
         </div>
@@ -75,7 +75,11 @@ const Home = () => {
         
         {/* Floating Menu Toggle Button */}
         <button 
-          className="fixed top-4 right-4 sm:top-6 sm:right-6 md:top-8 md:right-8 z-100 flex flex-col justify-center items-center w-12 h-12 sm:w-14 sm:h-14 cursor-pointer group backdrop-blur-md bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-[#9810FA]/50 transition-all duration-300"
+          className="fixed z-100 flex flex-col justify-center items-center w-12 h-12 sm:w-14 sm:h-14 cursor-pointer group backdrop-blur-md bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 hover:border-[#9810FA]/50 transition-all duration-300"
+          style={{
+            top: "max(1rem, env(safe-area-inset-top, 0px))",
+            right: "max(1rem, env(safe-area-inset-right, 0px))",
+          }}
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle Menu"
         >
@@ -91,11 +95,11 @@ const Home = () => {
         </button>
 
         {/* SECTION 1: Immersive Hero Section */}
-        <section className="min-h-screen h-screen w-full bg-black relative overflow-hidden">
+        <section id="hero-section" className="min-h-screen-safe h-screen-safe w-full bg-black relative overflow-hidden">
           
           {/* Blurry Top Banner Overlay */}
           <div 
-            className="absolute top-0 left-0 w-full h-32 sm:h-48 md:h-64 bg-cover z-0 opacity-50 blur-sm pointer-events-none"
+            className="absolute top-0 left-0 w-full h-20 sm:h-40 md:h-64 bg-cover z-0 opacity-40 sm:opacity-50 blur-sm pointer-events-none"
             style={{ backgroundImage: "url(/Umt.jpg)", backgroundPosition: "center center" }}
           />
 
@@ -108,7 +112,7 @@ const Home = () => {
 
         {/* Sub-sections rendering sequentially after loading finished */}
         {finishLoading && (
-          <>
+          <div id="main-content">
             {/* SECTION 2: Countdown Calendar */}
             <HackathonCalendar />
 
@@ -126,7 +130,7 @@ const Home = () => {
 
             {/* SECTION 7: Footer */}
             <Footer />
-          </>
+          </div>
         )}
 
         {/* CSS custom keyframe animations and styles */}
@@ -164,7 +168,7 @@ const Home = () => {
         >
           {/* Nebulae WebGL shader background under the navigation menu */}
           <div className="absolute inset-0 z-0 opacity-40">
-            <div className="fixed inset-0 w-screen h-screen bg-black" style={{ zIndex: -1, pointerEvents: "none" }}>
+            <div className="absolute inset-0 w-full h-full bg-black" style={{ zIndex: -1, pointerEvents: "none" }}>
               <ShaderBackground color="#9810FA" />
             </div>
           </div>
@@ -173,7 +177,7 @@ const Home = () => {
           <div className="relative z-10 flex flex-col items-center justify-center w-full px-4 sm:px-6 md:px-8 py-12 sm:py-16 md:py-20 text-center">
             <div className="nav-link opacity-0 translate-y-8 mb-6 sm:mb-8">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight">
-                AWS & DevOps<span className="text-[#9810FA]">Workshop</span>
+                AWS & DevOps <span className="text-[#9810FA]">Workshop</span>
               </h1>
               <p className="text-center text-gray-400 text-xs sm:text-sm mt-2 tracking-wider">2026</p>
             </div>
