@@ -74,7 +74,7 @@ const ModulesCarousel = () => {
       <DottedGlowBackground />
 
       <div className="relative z-10 max-w-6xl mx-auto space-y-10">
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-4 mb-6 sm:mb-8 md:mb-10">
           <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white px-2">
             Workshop Modules
           </h2>
