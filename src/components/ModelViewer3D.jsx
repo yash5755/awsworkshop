@@ -500,10 +500,37 @@ const VideoZoomPopup = ({ isVisible, videoSrc, onClose, dismissOnOverlayClick = 
 };
 
 // ─── 4. Preloader ─────────────────────────────────────────────────────────────
+const LOADING_MESSAGES = [
+  "Spinning up EC2 instances in the metaverse…",
+  "Deploying pixels to us-east-1…",
+  "Calibrating TV screens for the keynote…",
+  "Patching shaders across availability zones…",
+  "Running Terraform on the 3D lab…",
+  "Syncing workshop modules to the cloud…",
+  "Teaching GPUs what serverless means…",
+  "Warming up the hackathon HUD…",
+  "Propagating DNS through the scene graph…",
+  "Loading more AWS than a cert exam…",
+  "Bootstrapping the builder mindset…",
+  "Almost there — CI/CD for your eyeballs…",
+];
+
+const SLOW_LOAD_MESSAGES = [
+  "Still booting… our 3D cluster is stretching its legs.",
+  "Coffee break detected. The model will be back in a sip.",
+  "Network hiccup? Give it a moment — greatness takes bandwidth.",
+  "Patience pays off. Refresh only if this screen outlasts your snack.",
+];
+
 const Loader = ({ onLoadComplete }) => {
-  const { active, progress, loaded, total } = useProgress();
-  const [visible,  setVisible]  = useState(true);
+  const { active, progress } = useProgress();
+  const [visible, setVisible] = useState(true);
   const [slowWarn, setSlowWarn] = useState(false);
+  const [messageIdx, setMessageIdx] = useState(0);
+  const [fadeIn, setFadeIn] = useState(true);
+
+  const messages = slowWarn ? SLOW_LOAD_MESSAGES : LOADING_MESSAGES;
+  const statusMessage = messages[messageIdx % messages.length];
 
   useEffect(() => {
     if (!active && progress >= 100) {
@@ -520,6 +547,21 @@ const Loader = ({ onLoadComplete }) => {
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [visible, onLoadComplete]);
 
+  useEffect(() => {
+    setMessageIdx(0);
+  }, [slowWarn]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFadeIn(false);
+      setTimeout(() => {
+        setMessageIdx((i) => (i + 1) % messages.length);
+        setFadeIn(true);
+      }, 220);
+    }, 2800);
+    return () => clearInterval(interval);
+  }, [messages.length, slowWarn]);
+
   if (!visible) return null;
 
   return (
@@ -530,7 +572,7 @@ const Loader = ({ onLoadComplete }) => {
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight">
             AWS & DevOps <span className="text-[#9810FA]">Workshop</span>
           </h1>
-          <p className="text-gray-400 text-sm mt-2">Loading immersive 3D goodness</p>
+          <p className="text-gray-400 text-sm mt-2">Booting your immersive cloud lab</p>
         </div>
         <div className="flex flex-col items-center w-full">
           <div className="text-white text-4xl font-semibold tracking-tight">{Math.round(progress)}%</div>
@@ -542,11 +584,14 @@ const Loader = ({ onLoadComplete }) => {
               />
             </div>
           </div>
-          <div className="text-gray-400 text-xs mt-2 text-center">
-            {slowWarn
-              ? "Hmm still loading. Perhaps the model is having a coffee break. If it doesn't wake up, refresh?"
-              : `Loading assets (${loaded}/${total})`}
-          </div>
+          <p
+            key={`${slowWarn}-${messageIdx}`}
+            className={`text-gray-300 text-sm sm:text-base mt-4 text-center max-w-sm sm:max-w-md min-h-[2.75rem] leading-snug transition-opacity duration-200 ${
+              fadeIn ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {statusMessage}
+          </p>
         </div>
       </div>
     </div>

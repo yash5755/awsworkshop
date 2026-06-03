@@ -184,13 +184,6 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* Tighter calendar section on mobile — no forced full viewport below CTA */
-@media (max-width: 767px) {
-  .calendar-wrapper {
-    padding: 1rem !important;
-  }
-}
-
 .module-carousel-desktop-arrows {
   display: none;
   position: absolute;

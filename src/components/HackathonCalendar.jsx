@@ -43,7 +43,7 @@ const HackathonCalendar = () => {
   const isTimeUp = timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0;
 
   return (
-    <div className="relative flex min-h-0 md:min-h-screen-safe w-full items-center justify-center overflow-hidden bg-black py-8 sm:py-12 md:py-20 pb-6 sm:pb-12 md:pb-20">
+    <div className="relative flex min-h-screen-safe w-full items-center justify-center overflow-hidden bg-black py-12 sm:py-16 md:py-20">
       
       {/* Background grids and effects */}
       <div className="pointer-events-none absolute inset-0 bg-grid-white/[0.05] opacity-40" />
@@ -120,44 +120,41 @@ const HackathonCalendar = () => {
         </div>
 
         {/* Inline mini indicators */}
-        <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-6 mb-6 sm:mb-10 max-w-md sm:max-w-none mx-auto animate-fade-in-delay-2">
+        <div className="flex items-center justify-center gap-6 mb-10 flex-wrap animate-fade-in-delay-2">
           {/* Indicator 1 */}
-          <div className="flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg bg-white/5 border border-white/10 min-w-0">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 rounded bg-[#9810FA]/20 flex items-center justify-center">
-              <svg fill="currentColor" viewBox="0 0 20 20" className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#9810FA]">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10">
+            <div className="w-6 h-6 rounded bg-[#9810FA]/20 flex items-center justify-center">
+              <svg fill="currentColor" viewBox="0 0 20 20" className="w-3 h-3 text-[#9810FA]">
                 <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
               </svg>
             </div>
-            <div className="min-w-0">
-              <div className="text-white font-bold text-xs sm:text-sm leading-tight">60+</div>
-              <div className="text-gray-500 text-[10px] sm:text-xs font-medium leading-tight truncate sm:whitespace-normal">
-                <span className="sm:hidden">Participants</span>
-                <span className="hidden sm:inline">Expected Participants</span>
-              </div>
+            <div>
+              <div className="text-white font-bold text-sm">60+ </div>
+              <div className="text-gray-500 text-xs font-medium">Expected Participants</div>
             </div>
           </div>
           {/* Indicator 2 */}
-          <div className="flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg bg-white/5 border border-white/10 min-w-0">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 rounded bg-[#9810FA]/20 flex items-center justify-center">
-              <svg fill="currentColor" viewBox="0 0 20 20" className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#9810FA]">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10">
+            <div className="w-6 h-6 rounded bg-[#9810FA]/20 flex items-center justify-center">
+              <svg fill="currentColor" viewBox="0 0 20 20" className="w-3 h-3 text-[#9810FA]">
                 <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
               </svg>
             </div>
-            <div className="min-w-0">
-              <div className="text-white font-bold text-xs sm:text-sm leading-tight">1 Day</div>
-              <div className="text-gray-500 text-[10px] sm:text-xs font-medium leading-tight">Duration</div>
+            <div>
+              <div className="text-white font-bold text-sm">1 Day</div>
+              <div className="text-gray-500 text-xs font-medium">Duration</div>
             </div>
           </div>
           {/* Indicator 3 */}
-          <div className="flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg bg-white/5 border border-white/10 min-w-0">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 rounded bg-[#9810FA]/20 flex items-center justify-center">
-              <svg fill="currentColor" viewBox="0 0 20 20" className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#9810FA]">
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10">
+            <div className="w-6 h-6 rounded bg-[#9810FA]/20 flex items-center justify-center">
+              <svg fill="currentColor" viewBox="0 0 20 20" className="w-3 h-3 text-[#9810FA]">
                 <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd" />
               </svg>
             </div>
-            <div className="min-w-0">
-              <div className="text-white font-bold text-xs sm:text-sm leading-tight">05+</div>
-              <div className="text-gray-500 text-[10px] sm:text-xs font-medium leading-tight">Modules</div>
+            <div>
+              <div className="text-white font-bold text-sm">05+</div>
+              <div className="text-gray-500 text-xs font-medium">Modules</div>
             </div>
           </div>
         </div>
@@ -231,7 +228,7 @@ const HackathonCalendar = () => {
         </div>
 
         {/* Footer CTA */}
-        <div className="mt-8 sm:mt-12 text-center">
+        <div className="mt-12 text-center">
           <Link
             to="/register"
             className="group relative inline-flex items-center justify-center gap-2 px-6 sm:px-10 py-4 sm:py-5 bg-[#9810FA] rounded-full text-white font-bold text-base sm:text-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-[#9810FA]/50 animate-fade-in-delay-5 max-w-[95vw]"
@@ -245,7 +242,7 @@ const HackathonCalendar = () => {
             </span>
           </Link>
 
-          <div className="flex items-center justify-center gap-4 sm:gap-6 mt-4 sm:mt-6 mb-0 text-xs sm:text-sm text-gray-400 flex-wrap">
+          <div className="flex items-center justify-center gap-6 mt-6 text-sm text-gray-400 flex-wrap">
             <div className="flex items-center gap-1.5">
               <svg fill="currentColor" viewBox="0 0 20 20" className="w-4 h-4 text-[#9810FA] shrink-0">
                 <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />

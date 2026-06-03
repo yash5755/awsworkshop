@@ -70,7 +70,7 @@ const ModulesCarousel = () => {
   const activeItem = CAROUSEL_ITEMS[activeIdx];
 
   return (
-    <div className="relative min-h-[60vh] w-full bg-black py-12 sm:py-16 pb-20 sm:pb-16 px-4 md:px-8 text-white overflow-x-hidden">
+    <div className="relative min-h-[60vh] w-full bg-black py-12 sm:py-16 px-4 md:px-8 text-white overflow-x-hidden">
       <DottedGlowBackground />
 
       <div className="relative z-10 max-w-6xl mx-auto space-y-10">
