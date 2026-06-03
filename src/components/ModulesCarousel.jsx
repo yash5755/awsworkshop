@@ -84,47 +84,53 @@ const ModulesCarousel = () => {
         </div>
 
         <div className="relative max-w-5xl mx-auto">
-          <div 
+          <div
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
             onTouchStart={() => setIsPaused(true)}
             onTouchEnd={() => setIsPaused(false)}
-            className="relative grid md:grid-cols-2 gap-0 rounded-2xl sm:rounded-3xl overflow-hidden mb-4 md:mb-8 shadow-2xl border border-white/10 bg-white/5 backdrop-blur-xl"
+            className="relative rounded-2xl sm:rounded-3xl overflow-hidden mb-4 md:mb-8 shadow-2xl border border-white/10 bg-white/5 backdrop-blur-xl"
           >
-            <div className="relative min-h-[220px] sm:min-h-[280px] md:min-h-[440px]">
-              <img 
-                src={activeItem.img} 
-                alt={activeItem.title} 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+            <div className="module-carousel-media">
+              <img
+                key={activeItem.img}
+                src={activeItem.img}
+                alt={activeItem.title}
+                loading="lazy"
+                decoding="async"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+              <div className="module-carousel-media-overlay" aria-hidden />
             </div>
 
             <div className="relative flex flex-col justify-end p-5 sm:p-8 md:p-10 text-left space-y-3 sm:space-y-4 bg-gradient-to-br from-black/90 via-black/80 to-[#12051d]">
               <div className="space-y-2">
-                <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.35em] text-[#e0aaff] font-semibold">Home Modules Preview</p>
+                <p className="text-xs uppercase tracking-widest text-[#e0aaff] font-semibold">
+                  Home Modules Preview
+                </p>
                 <h3 className="text-xl sm:text-2xl md:text-4xl font-extrabold text-white leading-tight">
                   {activeItem.title}
                 </h3>
               </div>
 
               <div className="flex flex-wrap gap-2 text-sm text-white/90">
-                <span className="px-3 py-1 rounded-full bg-white/10 border border-white/10">{activeItem.price}</span>
-                <span className="px-3 py-1 rounded-full bg-white/10 border border-white/10">{activeItem.members}</span>
+                <span className="px-3 py-1 rounded-full bg-white/10 border border-white/10">
+                  {activeItem.price}
+                </span>
+                <span className="px-3 py-1 rounded-full bg-white/10 border border-white/10">
+                  {activeItem.members}
+                </span>
               </div>
 
-              <p className="text-sm md:text-lg text-gray-200 leading-relaxed">
-                {activeItem.tags}
-              </p>
+              <p className="text-sm md:text-lg text-gray-200 leading-relaxed">{activeItem.tags}</p>
 
               <div className="pt-2 flex flex-wrap gap-3">
-                <Link 
+                <Link
                   to="/modules"
                   className="inline-block px-6 py-2.5 bg-[#9810FA] hover:bg-[#9810FA]/90 text-white font-bold rounded-lg text-sm transition-all shadow-md"
                 >
                   View Details →
                 </Link>
-                <Link 
+                <Link
                   to="/register"
                   className="inline-block px-6 py-2.5 bg-white/10 hover:bg-white/15 text-white font-semibold rounded-lg text-sm transition-all border border-white/10"
                 >
@@ -133,26 +139,29 @@ const ModulesCarousel = () => {
               </div>
             </div>
 
-            <button 
+            <button
+              type="button"
               onClick={handlePrev}
-              className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 border border-white/10 items-center justify-center text-white z-20 hover:scale-105 transition-all outline-none"
+              className="module-carousel-desktop-arrows prev"
               aria-label="Previous Module"
             >
               ←
             </button>
 
-            <button 
+            <button
+              type="button"
               onClick={handleNext}
-              className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 border border-white/10 items-center justify-center text-white z-20 hover:scale-105 transition-all outline-none"
+              className="module-carousel-desktop-arrows next"
               aria-label="Next Module"
             >
               →
             </button>
           </div>
 
-          <div className="flex md:hidden justify-center gap-4 mb-6">
+          <div className="module-carousel-mobile-nav">
             <button
               onClick={handlePrev}
+              type="button"
               className="w-11 h-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white text-lg"
               aria-label="Previous Module"
             >
@@ -160,6 +169,7 @@ const ModulesCarousel = () => {
             </button>
             <button
               onClick={handleNext}
+              type="button"
               className="w-11 h-11 rounded-full bg-[#9810FA] border border-[#9810FA]/50 flex items-center justify-center text-white text-lg"
               aria-label="Next Module"
             >
@@ -171,6 +181,7 @@ const ModulesCarousel = () => {
             {CAROUSEL_ITEMS.map((_, idx) => (
               <button
                 key={idx}
+                type="button"
                 onClick={() => setActiveIdx(idx)}
                 className={`h-3 rounded-full transition-all duration-300 ${
                   idx === activeIdx ? "bg-[#9810FA] w-6" : "bg-white/20 hover:bg-white/40 w-3"

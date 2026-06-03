@@ -3,8 +3,6 @@ import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF, Environment, useProgress } from "@react-three/drei";
 import * as THREE from "three";
 import gsap from "gsap";
-import ShaderBackground from "./ShaderBackground";
-
 // ─── UV helper ────────────────────────────────────────────────────────────────
 const projectUVs = (geometry) => {
   if (!geometry) return geometry;
@@ -547,9 +545,9 @@ const ModelViewer3D = ({ onModelLoaded }) => {
     window.dispatchEvent(new CustomEvent("techverse-model-loaded"));
   };
 
-  const cameraPos = isMobile ? [0, 1.1, 4.2] : [7, 4, 10];
-  const fov       = isMobile ? 48 : 35;
-  const scale     = isMobile ? 0.82 : 1.0;
+  const cameraPos = isMobile ? [5.5, 3.2, 8.5] : [7, 4, 10];
+  const fov       = isMobile ? 40 : 35;
+  const scale     = isMobile ? 0.58 : 1.0;
 
   return (
     <div
@@ -560,19 +558,12 @@ const ModelViewer3D = ({ onModelLoaded }) => {
       {isLoading && <Loader onLoadComplete={handleLoad} />}
 
       <div className="relative box-border h-full w-full pt-2 sm:pt-10 md:pt-12">
-        {isMobile && (
-          <div className="absolute left-0 right-0 bottom-0 top-20 z-0 opacity-40 pointer-events-none blur-sm">
-            <ShaderBackground color="#9810FA" />
-          </div>
-        )}
-
         <Canvas
           shadows
           camera={{ position: cameraPos, fov }}
           gl={{ preserveDrawingBuffer: true, antialias: !isMobile, powerPreference: "high-performance" }}
-          style={{ width: "100%", height: "100%" }}
-          className={isMobile ? "pointer-events-none" : ""}
-          dpr={isMobile ? [1, 1.5] : [1, 2]}
+          className="model-viewer-canvas"
+          dpr={isMobile ? [1, 1.25] : [1, 2]}
         >
           <ambientLight intensity={0.6} />
           <directionalLight position={[5, 5, 5]} intensity={1.2} castShadow />
@@ -580,30 +571,25 @@ const ModelViewer3D = ({ onModelLoaded }) => {
 
           <Suspense fallback={null}>
             <group scale={[scale, scale, scale]}>
-              {isMobile ? (
-                <MobileModel onLoad={handleLoad} />
-              ) : (
-                <DesktopModel
-                  onVideoHover={setVideoHovered}
-                  onLoad={handleLoad}
-                  animationComplete={animationComplete}
-                />
-              )}
+              <DesktopModel
+                onVideoHover={isMobile ? undefined : setVideoHovered}
+                onLoad={handleLoad}
+                animationComplete={animationComplete}
+              />
             </group>
 
-            {!isMobile && (
-              <OrbitControls
-                enableZoom
-                enablePan={false}
-                maxPolarAngle={Math.PI / 2}
-                target={[0, 2.15, 0]}
-                minDistance={4}
-                maxDistance={12}
-                enableDamping
-                dampingFactor={0.05}
-                autoRotate={false}
-              />
-            )}
+            <OrbitControls
+              enableZoom={!isMobile}
+              enablePan={false}
+              maxPolarAngle={Math.PI / 2}
+              target={isMobile ? [0, 1.8, 0] : [0, 2.15, 0]}
+              minDistance={isMobile ? 3.5 : 4}
+              maxDistance={isMobile ? 9 : 12}
+              enableDamping
+              dampingFactor={0.05}
+              autoRotate={false}
+              rotateSpeed={isMobile ? 0.6 : 1}
+            />
 
             <Environment files="/hdri/potsdamer_platz_2k.hdr" />
           </Suspense>
@@ -612,20 +598,6 @@ const ModelViewer3D = ({ onModelLoaded }) => {
 
       {!isMobile && (
         <VideoZoomPopup isVisible={videoHovered} videoSrc="/Videos/inaguration.mp4" />
-      )}
-
-      {isMobile && !isLoading && (
-        <button
-          onClick={() => {
-            document.getElementById("main-content")?.scrollIntoView({ behavior: "smooth" });
-          }}
-          className="absolute bottom-20 sm:bottom-8 left-1/2 -translate-x-1/2 z-20 animate-bounce cursor-pointer bg-white/10 backdrop-blur-sm border border-white/20 rounded-full p-3 hover:bg-white/20 transition-all duration-300"
-          aria-label="Scroll to next section"
-        >
-          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </button>
       )}
     </div>
   );

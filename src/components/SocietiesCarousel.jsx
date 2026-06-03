@@ -2,20 +2,14 @@ import React, { useRef, useEffect } from "react";
 import DottedGlowBackground from "./DottedGlowBackground";
 
 const SOCIETIES = [
-  // AWS official logo (external SVG) — used for both AWS and Student Builders
   { name: "AWS", logo: "/Logo/aws.png" },
-  // VVCE college main logo (local)
   { name: "VVCE", logo: "/Logo/Logo.png" },
-  // AWS Student Builders (reusing AWS mark as the group badge)
   { name: "AWS Student Builders", logo: "/Logo/aws_builder.jpeg" },
-  // Dept. of CSE, VVCE (use local club logo as department mark)
-  { name: "Dept. of CSE, VVCE", logo: "/Logo/club%20logo.jpeg" }
+  { name: "Dept. of CSE, VVCE", logo: "/Logo/club%20logo.jpeg" },
 ];
 
 const SocietiesCarousel = () => {
   const scrollContainerRef = useRef(null);
-
-  // Original list duplicated once to form a seamless loop of 10 items
   const duplicatedSocieties = [...SOCIETIES, ...SOCIETIES];
 
   useEffect(() => {
@@ -24,7 +18,7 @@ const SocietiesCarousel = () => {
     if (!container) return;
 
     let scrollPos = 0;
-    const scrollSpeed = 0.5; // Smooth scroll increment speed
+    const scrollSpeed = 0.5;
 
     const scrollLoop = () => {
       scrollPos += scrollSpeed;
@@ -44,22 +38,19 @@ const SocietiesCarousel = () => {
 
   return (
     <div className="relative w-full bg-black py-16 md:py-24 overflow-hidden">
-      {/* Background grids and effects */}
       <div className="pointer-events-none absolute inset-0 bg-grid-white/[0.05] opacity-40" />
       <div className="pointer-events-none absolute inset-0 z-0">
-        <DottedGlowBackground 
-          opacity={0.3} 
-          gap={20} 
-          radius={2.5} 
-          color="rgba(152,16,250,0.08)" 
-          glowColor="rgba(12,12,12,0.6)" 
-          backgroundOpacity={0} 
+        <DottedGlowBackground
+          opacity={0.3}
+          gap={20}
+          radius={2.5}
+          color="rgba(152,16,250,0.08)"
+          glowColor="rgba(12,12,12,0.6)"
+          backgroundOpacity={0}
         />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 text-center space-y-10">
-        
-        {/* Title */}
         <div className="space-y-3">
           <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white px-2">
             Powered By <span className="text-[#9810FA]">Our Societies</span>
@@ -69,27 +60,24 @@ const SocietiesCarousel = () => {
           </p>
         </div>
 
-        {/* Marquee Row */}
-        <div className="relative w-full">
-          {/* Side blur linear-gradient overlays */}
-          <div className="absolute left-0 top-0 bottom-0 w-10 sm:w-20 md:w-32 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-10 sm:w-20 md:w-32 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
+        <div className="relative w-full max-w-full">
+          <div className="sponsor-marquee-fade-left" aria-hidden />
+          <div className="sponsor-marquee-fade-right" aria-hidden />
 
-          <div 
+          <div
             ref={scrollContainerRef}
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-            className="flex gap-8 sm:gap-12 md:gap-16 overflow-x-hidden scrollbar-hide py-4"
+            className="flex gap-8 overflow-x-hidden scrollbar-hide py-4"
           >
             {duplicatedSocieties.map((soc, idx) => (
-              <div 
-                key={`${soc.name}-${idx}`} 
-                className="shrink-0 group cursor-pointer"
-              >
-                <div className="relative w-28 h-28 sm:w-40 sm:h-40 md:w-48 md:h-48 backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all duration-300 hover:bg-white/10 hover:border-[#9810FA]/50 hover:scale-105 flex items-center justify-center">
-                  <img 
-                    src={soc.logo} 
-                    alt={soc.name} 
-                    className="w-full h-full object-contain p-4 society-logo-img transition-all duration-300"
+              <div key={`${soc.name}-${idx}`} className="shrink-0 group">
+                <div className="sponsor-logo-card">
+                  <img
+                    src={soc.logo}
+                    alt={soc.name}
+                    className="society-logo-img"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
               </div>
@@ -97,29 +85,32 @@ const SocietiesCarousel = () => {
           </div>
         </div>
 
-        {/* Pulsing indicator dots */}
         <div className="flex items-center justify-center gap-2 mt-12">
           <div className="w-2 h-2 rounded-full bg-[#9810FA] animate-pulse" />
-          <div style={{ animationDelay: "0.2s" }} className="w-2 h-2 rounded-full bg-[#9810FA]/60 animate-pulse" />
-          <div style={{ animationDelay: "0.4s" }} className="w-2 h-2 rounded-full bg-[#9810FA]/30 animate-pulse" />
+          <div
+            style={{ animationDelay: "0.2s" }}
+            className="w-2 h-2 rounded-full bg-[#9810FA]/60 animate-pulse"
+          />
+          <div
+            style={{ animationDelay: "0.4s" }}
+            className="w-2 h-2 rounded-full bg-[#9810FA]/30 animate-pulse"
+          />
         </div>
-
       </div>
 
       <style>{`
-        /* Hide scrollbars but keep functionality */
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
         }
-        
+
         .society-logo-img {
           filter: grayscale(100%);
           opacity: 0.7;
         }
-        
+
         .group:hover .society-logo-img {
-          filter: grayscale(0%) !important;
-          opacity: 1 !important;
+          filter: grayscale(0%);
+          opacity: 1;
         }
       `}</style>
     </div>

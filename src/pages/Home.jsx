@@ -108,6 +108,21 @@ const Home = () => {
 
           {/* Bottom Scrolling Marquee ticker (shown when model loaded) */}
           {finishLoading && <Ticker />}
+
+          {finishLoading && (
+            <button
+              type="button"
+              className="hero-scroll-btn"
+              aria-label="Scroll to next section"
+              onClick={() => {
+                document.getElementById("main-content")?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </button>
+          )}
         </section>
 
         {/* Sub-sections rendering sequentially after loading finished */}

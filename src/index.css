@@ -33,6 +33,198 @@ body {
   }
 }
 
+/* ── Hero: scroll-down control (mobile only) ───────────────────────────── */
+.hero-scroll-btn {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  animation: hero-scroll-bounce 2s ease-in-out infinite;
+}
+
+.hero-scroll-btn svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #fff;
+}
+
+@media (min-width: 768px) {
+  .hero-scroll-btn {
+    display: none;
+  }
+}
+
+@keyframes hero-scroll-bounce {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(6px);
+  }
+}
+
+/* ── Sponsors / societies logos (fixed size — Tailwind w-28 etc. not in bundle) */
+.sponsor-marquee-fade-left,
+.sponsor-marquee-fade-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2.5rem;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.sponsor-marquee-fade-left {
+  left: 0;
+  background: linear-gradient(to right, #000, transparent);
+}
+
+.sponsor-marquee-fade-right {
+  right: 0;
+  background: linear-gradient(to left, #000, transparent);
+}
+
+@media (min-width: 768px) {
+  .sponsor-marquee-fade-left,
+  .sponsor-marquee-fade-right {
+    width: 5rem;
+  }
+}
+
+.sponsor-logo-card {
+  width: 5.5rem;
+  height: 5.5rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+}
+
+.sponsor-logo-card img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (min-width: 640px) {
+  .sponsor-logo-card {
+    width: 7rem;
+    height: 7rem;
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .sponsor-logo-card {
+    width: 8.5rem;
+    height: 8.5rem;
+  }
+}
+
+/* ── Home modules carousel image ─────────────────────────────────────────── */
+.module-carousel-media {
+  position: relative;
+  width: 100%;
+  height: 12.5rem;
+  overflow: hidden;
+  background: #0a0a0a;
+}
+
+.module-carousel-media .module-carousel-media-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, #000, rgba(0, 0, 0, 0.2), transparent);
+  pointer-events: none;
+}
+
+.module-carousel-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (min-width: 640px) {
+  .module-carousel-media {
+    height: 17.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .module-carousel-media {
+    height: 27.5rem;
+    min-height: 27.5rem;
+  }
+}
+
+.module-carousel-mobile-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.module-carousel-desktop-arrows {
+  display: none;
+  position: absolute;
+  top: 33%;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  cursor: pointer;
+}
+
+.module-carousel-desktop-arrows.prev {
+  left: 1rem;
+}
+
+.module-carousel-desktop-arrows.next {
+  right: 1rem;
+}
+
+@media (min-width: 768px) {
+  .module-carousel-mobile-nav {
+    display: none;
+  }
+
+  .module-carousel-desktop-arrows {
+    display: flex;
+  }
+}
+
+/* ── 3D canvas: allow touch rotate on mobile ─────────────────────────────── */
+.model-viewer-canvas {
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
 /* Lenis Smooth Scroll */
 html.lenis,
 html.lenis body {
