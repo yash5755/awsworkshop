@@ -37,7 +37,7 @@ const SocietiesCarousel = () => {
   }, []);
 
   return (
-    <div className="relative w-full bg-black py-16 md:py-24 overflow-hidden">
+    <div className="relative w-full bg-black pt-12 pb-16 sm:pt-16 sm:pb-16 md:py-24 overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-grid-white/[0.05] opacity-40" />
       <div className="pointer-events-none absolute inset-0 z-0">
         <DottedGlowBackground

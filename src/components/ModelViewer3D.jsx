@@ -201,7 +201,7 @@ const isNamedScreen = (mesh, nodeNames, meshNames) =>
   meshNames.includes(mesh.name) ||
   nodeNames.includes(mesh.userData?.name);
 
-const DesktopModel = ({ onVideoHover, onLoad }) => {
+const DesktopModel = ({ onVideoHover, onLoad, isMobile = false }) => {
   const { scene }               = useGLTF("/Model/computers.glb");
   const { camera, gl }          = useThree();
   const modelRef                = useRef();
@@ -281,6 +281,19 @@ const DesktopModel = ({ onVideoHover, onLoad }) => {
     const dom = gl?.domElement;
     if (!dom) return;
 
+    const intersectVideoScreen = (clientX, clientY) => {
+      const targets = Object.values(screensRef.current);
+      if (!targets.length) return null;
+
+      const rect = dom.getBoundingClientRect();
+      pointerRef.current.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      pointerRef.current.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycasterRef.current.setFromCamera(pointerRef.current, camera);
+      const hits = raycasterRef.current.intersectObjects(targets, true);
+      return hits.length ? hits[0].object : null;
+    };
+
     const scheduleHoverOff = () => {
       if (hoverOffTimerRef.current) return;
       hoverOffTimerRef.current = setTimeout(() => {
@@ -302,6 +315,8 @@ const DesktopModel = ({ onVideoHover, onLoad }) => {
     };
 
     const handlePointerMove = (event) => {
+      if (isMobile) return;
+
       if (!hasRotated.current && modelRef.current) {
         hasRotated.current = true;
         gsap.to(modelRef.current.rotation, {
@@ -311,20 +326,13 @@ const DesktopModel = ({ onVideoHover, onLoad }) => {
         });
       }
 
-      const targets = Object.values(screensRef.current);
-      if (!targets.length) { scheduleHoverOff(); return; }
-
-      const rect = dom.getBoundingClientRect();
-      pointerRef.current.x =  ((event.clientX - rect.left) / rect.width)  * 2 - 1;
-      pointerRef.current.y = -((event.clientY - rect.top)  / rect.height) * 2 + 1;
-
-      raycasterRef.current.setFromCamera(pointerRef.current, camera);
-      const hits = raycasterRef.current.intersectObjects(targets, true);
-
-      if (!hits.length) { scheduleHoverOff(); return; }
+      const hitMesh = intersectVideoScreen(event.clientX, event.clientY);
+      if (!hitMesh) {
+        scheduleHoverOff();
+        return;
+      }
 
       cancelHoverOff();
-      const hitMesh = hits[0].object;
       if (hoveredMeshRef.current !== hitMesh) {
         if (hoveredMeshRef.current) animateScreen(hoveredMeshRef.current, false);
         hoveredMeshRef.current = hitMesh;
@@ -335,6 +343,8 @@ const DesktopModel = ({ onVideoHover, onLoad }) => {
     };
 
     const handlePointerLeave = () => {
+      if (isMobile) return;
+
       if (hoverOffTimerRef.current) clearTimeout(hoverOffTimerRef.current);
       hoverOffTimerRef.current = setTimeout(() => {
         hoverOffTimerRef.current = null;
@@ -347,16 +357,36 @@ const DesktopModel = ({ onVideoHover, onLoad }) => {
       }, 300);
     };
 
-    dom.addEventListener("pointermove",  handlePointerMove);
-    dom.addEventListener("pointerleave", handlePointerLeave);
+    const handlePointerDown = (event) => {
+      if (!isMobile || !onVideoHover) return;
+
+      const hitMesh = intersectVideoScreen(event.clientX, event.clientY);
+      if (!hitMesh) return;
+
+      if (hoveredMeshRef.current !== hitMesh) {
+        if (hoveredMeshRef.current) animateScreen(hoveredMeshRef.current, false);
+        hoveredMeshRef.current = hitMesh;
+        animateScreen(hitMesh, true);
+      }
+      onVideoHover(true);
+    };
+
+    if (isMobile) {
+      dom.addEventListener("pointerdown", handlePointerDown);
+    } else {
+      dom.addEventListener("pointermove", handlePointerMove);
+      dom.addEventListener("pointerleave", handlePointerLeave);
+    }
+
     return () => {
-      dom.removeEventListener("pointermove",  handlePointerMove);
+      dom.removeEventListener("pointerdown", handlePointerDown);
+      dom.removeEventListener("pointermove", handlePointerMove);
       dom.removeEventListener("pointerleave", handlePointerLeave);
       cancelHoverOff();
       if (hoveredMeshRef.current) animateScreen(hoveredMeshRef.current, false);
       if (onVideoHover) onVideoHover(false);
     };
-  }, [camera, gl, onVideoHover]);
+  }, [camera, gl, onVideoHover, isMobile]);
 
   return (
     <group ref={modelRef} dispose={null}>
@@ -366,7 +396,7 @@ const DesktopModel = ({ onVideoHover, onLoad }) => {
 };
 
 // ─── 3. Video zoom popup ──────────────────────────────────────────────────────
-const VideoZoomPopup = ({ isVisible, videoSrc }) => {
+const VideoZoomPopup = ({ isVisible, videoSrc, onClose, dismissOnOverlayClick = false }) => {
   const overlayRef   = useRef(null);
   const containerRef = useRef(null);
   const borderRef    = useRef(null);
@@ -401,14 +431,29 @@ const VideoZoomPopup = ({ isVisible, videoSrc }) => {
   return (
     <div
       ref={overlayRef}
+      role={dismissOnOverlayClick ? "button" : undefined}
+      tabIndex={dismissOnOverlayClick && isVisible ? 0 : undefined}
+      onClick={dismissOnOverlayClick && isVisible ? onClose : undefined}
+      onKeyDown={
+        dismissOnOverlayClick && isVisible
+          ? (e) => {
+              if (e.key === "Escape") onClose?.();
+            }
+          : undefined
+      }
       style={{
         opacity: 0,
         background: "radial-gradient(ellipse at center, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.95) 100%)",
-        pointerEvents: "none",
+        pointerEvents: dismissOnOverlayClick && isVisible ? "auto" : "none",
       }}
       className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
     >
-      <div ref={containerRef} style={{ opacity: 0, transform: "scale(0.8)" }} className="relative">
+      <div
+        ref={containerRef}
+        style={{ opacity: 0, transform: "scale(0.8)" }}
+        className="relative"
+        onClick={dismissOnOverlayClick ? (e) => e.stopPropagation() : undefined}
+      >
         <div
           style={{ boxShadow: "0 0 60px rgba(0,217,255,0.3), 0 0 100px rgba(184,79,255,0.2)" }}
           className="absolute inset-0 rounded-lg pointer-events-none"
@@ -572,9 +617,9 @@ const ModelViewer3D = ({ onModelLoaded }) => {
           <Suspense fallback={null}>
             <group scale={[scale, scale, scale]}>
               <DesktopModel
-                onVideoHover={isMobile ? undefined : setVideoHovered}
+                onVideoHover={setVideoHovered}
                 onLoad={handleLoad}
-                animationComplete={animationComplete}
+                isMobile={isMobile}
               />
             </group>
 
@@ -596,9 +641,12 @@ const ModelViewer3D = ({ onModelLoaded }) => {
         </Canvas>
       </div>
 
-      {!isMobile && (
-        <VideoZoomPopup isVisible={videoHovered} videoSrc="/Videos/inaguration.mp4" />
-      )}
+      <VideoZoomPopup
+        isVisible={videoHovered}
+        videoSrc="/Videos/inaguration.mp4"
+        onClose={() => setVideoHovered(false)}
+        dismissOnOverlayClick={isMobile}
+      />
     </div>
   );
 };
