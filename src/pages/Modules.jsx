@@ -108,12 +108,16 @@ const Modules = () => {
                       <p className="text-sm text-gray-200 drop-shadow-[0_2px_10px_rgba(0,0,0,1)]">
                         {mod.tags}
                       </p>
-                      <Link
+                      
+                      {/* UPDATED: Registration link now points directly to the external Meetup page */}
+                      <a
                         className="inline-block bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-lg transition-colors text-sm font-semibold shadow-xl"
-                        to="/register"
+                        href="https://www.meetup.com/aws-sbg-at-vidyavardhaka-college-of-eng/events/315069919/?utm_medium=referral&utm_campaign=share-btn_savedevents_share_modal&utm_source=link&utm_version=v2&member_id=477651036"
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
                         Register Now →
-                      </Link>
+                      </a>
                     </div>
                   </div>
                 ))}
