@@ -218,15 +218,18 @@ const Home = () => {
                 </Link>
               ))}
 
-              <Link 
+              {/* UPDATED: Register Now Button redirects externally to Meetup */}
+              <a 
                 className="nav-link opacity-0 translate-y-8 group cursor-pointer mt-3 sm:mt-4" 
-                to="/register"
+                href="https://www.meetup.com/aws-sbg-at-vidyavardhaka-college-of-eng/events/315069919/?utm_medium=referral&utm_campaign=share-btn_savedevents_share_modal&utm_source=link&utm_version=v2&member_id=477651036"
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setMenuOpen(false)}
               >
                 <div className="px-6 sm:px-8 py-2.5 sm:py-3 bg-[#9810FA] hover:bg-[#9810FA]/90 text-white font-bold text-lg sm:text-xl md:text-2xl rounded-full transition-all duration-300 shadow-lg shadow-[#9810FA]/50 hover:shadow-xl hover:shadow-[#9810FA]/70 hover:scale-105">
                   Register Now
                 </div>
-              </Link>
+              </a>
 
               <Link 
                 className="nav-link opacity-0 translate-y-8 group cursor-pointer relative mt-2" 
