@@ -221,7 +221,7 @@ const Home = () => {
               {/* UPDATED: Register Now Button redirects externally to Meetup */}
               <a 
                 className="nav-link opacity-0 translate-y-8 group cursor-pointer mt-3 sm:mt-4" 
-                href="https://www.meetup.com/aws-sbg-at-vidyavardhaka-college-of-eng/events/315069919/?utm_medium=referral&utm_campaign=share-btn_savedevents_share_modal&utm_source=link&utm_version=v2&member_id=477651036"
+                href="https://www.meetup.com/aws-sbg-at-vidyavardhaka-college-of-eng/events/315069919/"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setMenuOpen(false)}
