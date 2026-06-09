@@ -35,7 +35,7 @@ const About = () => {
               <div className="border-t pt-6">
                 <h3 className="text-xl font-bold text-purple-900 mb-4">Why Participate?</h3>
                 <ul className="list-disc list-inside text-gray-700 space-y-2">
-                  <li>💡 <strong>$100+ AWS Credits</strong> for top 3 winners in the quiz</li>
+                  <li>💡 <strong>$75+ AWS Credits</strong> for top 3 winners in the quiz</li>
                   <li>🤝 <strong>Networking Opportunities</strong> with industry leaders and sponsors.</li>
                   <li>🚀 <strong>Skill Enhancement</strong> through real-world problem statements.</li>
                   <li>🎓 <strong>Certificates & Awards</strong> to boost your academic and professional profile.</li>
