@@ -9,11 +9,11 @@ import Schedule from "./pages/Schedule";
 import Contact from "./pages/Contact";
 
 const RegisterRedirect = () => {
-  window.location.replace("https://www.meetup.com/aws-sbg-at-vidyavardhaka-college-of-eng/events/315069919/");
+  window.location.replace("https://github.com/yeshwanthlm/AWS-Cloud-DevOps-Workshop-VVCE");
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white font-sans">
       <div className="w-12 h-12 border-4 border-[#9810FA] border-t-transparent rounded-full animate-spin mb-4"></div>
-      <p className="text-lg tracking-wide text-gray-400">Redirecting to Meetup registration...</p>
+      <p className="text-lg tracking-wide text-gray-400">Redirecting to Github...</p>
     </div>
   );
 };
