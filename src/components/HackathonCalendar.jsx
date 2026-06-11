@@ -234,7 +234,7 @@ const HackathonCalendar = () => {
             className="group relative inline-flex items-center justify-center gap-2 px-6 sm:px-10 py-4 sm:py-5 bg-[#9810FA] rounded-full text-white font-bold text-base sm:text-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-[#9810FA]/50 animate-fade-in-delay-5 max-w-[95vw]"
           >
             <span className="relative z-10 flex items-center gap-2 text-center">
-              <span className="sm:hidden">Register for Workshop 2026</span>
+              <span className="sm:hidden">Prerequisites</span>
               <span className="hidden sm:inline">Register Now for AWS & DevOps 2026</span>
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-5 h-5 group-hover:translate-x-1 transition-transform">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
