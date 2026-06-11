@@ -66,7 +66,7 @@ const ImagesSliderDemo = () => {
             to="/register"
             className="inline-block px-6 sm:px-8 py-3 sm:py-4 bg-[#9810FA] hover:bg-[#9810FA]/90 text-white font-bold text-base sm:text-lg rounded-full transition-all hover:scale-105 shadow-lg shadow-[#9810FA]/50"
           >
-            Register Now
+            Prerequisites
           </Link>
         </motion.div>
       </div>
